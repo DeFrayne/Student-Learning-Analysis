@@ -1,0 +1,22 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1592885308682.000,
+    "dirty" : false,
+    "encoding" : "ISO8859-1",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "1F8616E",
+    "lastKnownWriteTime" : 1592361790,
+    "last_content_update" : 1592361790,
+    "path" : "D:/Teaching/Lake Mary High School/Geometry/Data/Khan Scores.R",
+    "project_path" : null,
+    "properties" : {
+        "cursorPosition" : "71,0",
+        "scrollLine" : "61"
+    },
+    "relative_order" : 3,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}

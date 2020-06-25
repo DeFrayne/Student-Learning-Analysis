@@ -1,0 +1,93 @@
+library(sqldf)
+library(RSQLite)
+setwd("D:/Teaching/Lake Mary High School/Geometry/Data")
+
+#Read in the data sets
+P3 <- read.csv("P3 Khan.csv")
+P4 <- read.csv("P4 Khan.csv")
+P6 <- read.csv("P6 Khan.csv")
+
+#Replace all "." with "_", because sqldf has trouble reading names that contain "."
+colnames(P3) <- gsub("\\.","_",colnames(P3))
+colnames(P4) <- gsub("\\.","_",colnames(P4))
+colnames(P6) <- gsub("\\.","_",colnames(P6))
+
+#The number of videos students have watched as assignments
+vidscore <- sqldf("SELECT COUNT(distinct(ï__Assignment_Name)) FROM P3 WHERE (Assignment_Type LIKE 'Video')")
+
+#Remove assignments that are videos (which have no score value)
+P3 <- (P3[P3["Assignment_Type"] != "Video",])
+P4 <- (P4[P4["Assignment_Type"] != "Video",])
+P6 <- (P6[P6["Assignment_Type"] != "Video",])
+
+#Remove students that are no longer in the class for Period 3
+P3 <- P3[P3["Student_Name"] != "Williford, Randy",]
+P3 <- P3[P3["Student_Name"] != "Gonzalez, Mariana",]
+P3 <- P3[P3["Student_Name"] != "Hoskins, Ashton",]
+P3 <- P3[P3["Student_Name"] != "Thomas, Terriyona",]
+P3 <- P3[P3["Student_Name"] != "null",]
+
+#Remove students that are no longer in the class for Period 4
+P4 <- P4[P4["Student_Name"] != "Gonzalez, Mariana",]
+P4 <- P4[P4["Student_Name"] != "Liggett, Jeffrey",]
+P4 <- P4[P4["Student_Name"] != "Muniz, DeAnthony",]
+P4 <- P4[P4["Student_Name"] != "Cobb, Dylan",]
+P4 <- P4[P4["Student_Name"] != "Moore, Mikkylah",]
+P4 <- P4[P4["Student_Name"] != "Pena-Lamourt, Kiara",]
+P4 <- P4[P4["Student_Name"] != "null",]
+
+#Remove students that are no longer in the class for Period 6
+P6 <- P6[P6["Student_Name"] != "Barnes, Ni'kayla",]
+P6 <- P6[P6["Student_Name"] != "Tinis, Lucas",]
+P6 <- P6[P6["Student_Name"] != "Kurtoglu, Zeynep",]
+P6 <- P6[P6["Student_Name"] != "null",]
+
+sqldf("SELECT Student_Name,
+	SUM(1.0*Score_Best_Ever/Points_Possible > 0.4)*2 AS Score
+	FROM P3
+	WHERE (Due_Date LIKE ('Apr 5%')
+		OR Due_Date LIKE ('Apr 19%')
+		OR Due_Date LIKE ('Apr 26%')
+		OR Due_Date LIKE ('May 3%')
+		OR Due_Date LIKE ('May 10%'))
+	GROUP BY Student_Name
+	")
+
+sqldf('SELECT `Student.Name`,
+	SUM(1.0*Score.Best.Ever/Points.Possible > 0.4)*2 AS Score
+	FROM P3
+	WHERE (Due.Date LIKE ('Apr 5%')
+		OR Due.Date LIKE ('Apr 19%')
+		OR Due.Date LIKE ('Apr 26%')
+		OR Due.Date LIKE ('May 3%')
+		OR Due.Date LIKE ('May 10%'))
+	GROUP BY Student.Name
+	')
+
+sqldf("SELECT `Student.Name`
+	FROM P3
+	WHERE(Due.Date LIKE ('Apr%')")
+
+
+sqldf("SELECT Student_Name,
+	SUM(1.0*Score_Best_Ever/Points_Possible > 0.4)*2 AS Score
+	FROM P4
+	WHERE (Due_Date LIKE ('Apr 5%')
+		OR Due_Date LIKE ('Apr 19%')
+		OR Due_Date LIKE ('Apr 26%')
+		OR Due_Date LIKE ('May 3%')
+		OR Due_Date LIKE ('May 10%'))
+	GROUP BY Student_Name
+	")
+
+sqldf("SELECT Student_Name,
+	SUM(1.0*Score_Best_Ever/Points_Possible > 0.4)*2 AS Score
+	FROM P6
+	WHERE (Due_Date LIKE ('Apr 5%')
+		OR Due_Date LIKE ('Apr 19%')
+		OR Due_Date LIKE ('Apr 26%')
+		OR Due_Date LIKE ('May 3%')
+		OR Due_Date LIKE ('May 10%'))
+	GROUP BY Student_Name
+	")
+

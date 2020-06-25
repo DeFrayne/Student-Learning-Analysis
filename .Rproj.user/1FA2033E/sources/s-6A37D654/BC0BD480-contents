@@ -1,0 +1,248 @@
+---
+title: "Analysis"
+author: "Don DeFrayne"
+date: "June 16, 2020"
+output: pdf_document
+---
+
+```{r}
+#Libraries used
+library(sqldf)
+library(tidyr)
+library(dplyr)
+library(data.table)
+```
+  
+```{r}
+#This section of the code is for removing identifying student data. Do not run it on your local machine,
+#as you do not have access to the source files. This is only intended to be for record-keeping purposes.
+
+#Set the working directory to the folder containing the data
+setwd("D:/Data/Learning Project")
+
+#View the list of files in the working directory
+list.files(getwd())
+
+#Read in each gradebook file
+P3Grades <- read.csv("P3 Grades.csv", stringsAsFactors = FALSE)
+P4Grades <- read.csv("P4 Grades.csv", stringsAsFactors = FALSE)
+P6Grades <- read.csv("P6 Grades.csv", stringsAsFactors = FALSE)
+
+#Remove unimportant classroom information
+P3Grades <- P3Grades[c(-1, -2, -34, -35),]
+P4Grades <- P4Grades[c(-1, -2, -30, -31),]
+P6Grades <- P6Grades[c(-1, -2, -20, -21),]
+
+#Compact the categories so each column has a header containing all important information
+P3Grades[1,] <- paste(P3Grades[1,], P3Grades[2,], P3Grades[3,], P3Grades[4,])
+P4Grades[1,] <- paste(P4Grades[1,], P4Grades[2,], P4Grades[3,], P4Grades[4,])
+P6Grades[1,] <- paste(P6Grades[1,], P6Grades[2,], P6Grades[3,], P6Grades[4,])
+
+#Create new headers containing all importation information; remove spaces and periods
+colnames(P3Grades) <- c("ID_Number", P3Grades[1,-1])
+colnames(P4Grades) <- c("ID_Number", P4Grades[1,-1])
+colnames(P6Grades) <- c("ID_Number", P6Grades[1,-1])
+
+#Remove all superfuluous rows, since this data is now contained in the headers
+P3Grades <- P3Grades[c(-1,-2,-3,-4),]
+P4Grades <- P4Grades[c(-1,-2,-3,-4),]
+P6Grades <- P6Grades[c(-1,-2,-3,-4),]
+
+#Merge all 3 gradebooks into 1 file and assign ID numbers; remove spaces and periods
+Grades <- rbind(P3Grades, P4Grades, P6Grades)
+Grades$ID_Number <- seq(1:length(Grades[,1]))
+colnames(Grades) <- gsub("\\.","_",colnames(Grades))
+colnames(Grades) <- gsub("\\ ","",colnames(Grades))
+
+#Fix duplicate Grades colnames; this is due to gradebook export limitations
+which(colnames(Grades)=="3DShaWK34-Su04/05/2020ASMT")
+which(colnames(Grades)=="Q3ExaWK31-M03/09/2020ASMT")
+which(colnames(Grades)=="PolygoWK23-Th01/16/2020ASMT")
+colnames(Grades)[15] <- "3DSha1WK34-Su04/05/2020ASMT"
+colnames(Grades)[16] <- "3DSha2WK34-Su04/05/2020ASMT"
+colnames(Grades)[24] <- "Q3ExaRev3WK31-M03/09/2020ASMT"
+colnames(Grades)[25] <- "Q3ExaRev2WK31-M03/09/2020ASMT"
+colnames(Grades)[26] <- "Q3ExaRev1WK31-M03/09/2020ASMT"
+colnames(Grades)[47] <- "PolygoRev2WK23-Th01/16/2020ASMT"
+colnames(Grades)[48] <- "PolygoRev3WK23-Th01/16/2020ASMT"
+
+#Read in Spotlight
+Spotlight <- read.csv("Spotlight.csv", stringsAsFactors = FALSE)
+
+#Join Grades and Spotlight
+Grades_Spotlight <- left_join(Grades, Spotlight, by=c("LastName", "FirstName"))
+
+#Read in each quarter exam. There was no Q4 exam due to coronavirus; it was canceled.
+Q1Exam <- read.csv("Q1 Exam.csv", stringsAsFactors = FALSE)
+Q2Exam <- read.csv("Q2 Exam.csv", stringsAsFactors = FALSE)
+Q3Exam <- read.csv("Q3 Exam.csv", stringsAsFactors = FALSE)
+
+#Change column names to specify which exam each file refers to
+colnames(Q1Exam)[3] <- "Q1 Exam %"
+colnames(Q2Exam)[3] <- "Q2 Exam %"
+colnames(Q3Exam)[3] <- "Q3 Exam %"
+
+#Change column names for each question to reflect which exam they are from
+for(i in 4:28){
+  colnames(Q1Exam)[i] <- paste0("E1Q",i-3)
+  }
+
+for(i in 4:28){
+  colnames(Q2Exam)[i] <- paste0("E2Q",i-3)
+  }
+
+for(i in 4:28){
+  colnames(Q3Exam)[i] <- paste0("E3Q",i-3)
+}
+
+#Read in Contact and FSA
+Contact <- read.csv("Contact.csv", stringsAsFactors = FALSE)
+FSA <- read.csv("FSA.csv", stringsAsFactors = FALSE)
+
+#Join Grades_Spotlight with Exams, Contact, and FSA
+Grades_Spotlight_Exams <- left_join(Grades_Spotlight, Q1Exam, by=c("LastName"="Last.Name", "FirstName"="First.Name"))
+Grades_Spotlight_Exams <- left_join(Grades_Spotlight_Exams, Q2Exam, by=c("LastName"="Last.Name", "FirstName"="First.Name"))
+Grades_Spotlight_Exams <- left_join(Grades_Spotlight_Exams, Q3Exam, by=c("LastName"="Last.Name", "FirstName"="First.Name"))
+Grades_Spotlight_Exams_Contact <- left_join(Grades_Spotlight_Exams, Contact, by=c("StudentId"="Other.ID"))
+All_Data <- left_join(Grades_Spotlight_Exams_Contact, FSA, by=c("StudentId"="Student.Id"))
+
+#Read in the Khan Academy files
+P3Khan <- read.csv("P3 Khan.csv", stringsAsFactors = FALSE)
+P4Khan <- read.csv("P4 Khan.csv", stringsAsFactors = FALSE)
+P6Khan <- read.csv("P6 Khan.csv", stringsAsFactors = FALSE)
+
+#Add a new column called ID_Number; this is not the StudentID, but the anonymous signifier
+P3Khan[,11] <- ""
+P4Khan[,11] <- ""
+P6Khan[,11] <- ""
+colnames(P3Khan)[11] <- "ID_Number"
+colnames(P4Khan)[11] <- "ID_Number"
+colnames(P6Khan)[11] <- "ID_Number"
+
+#Replace all "." with "_", because sqldf has trouble reading names that contain "."
+colnames(P3Khan) <- gsub("\\.","_",colnames(P3Khan))
+colnames(P4Khan) <- gsub("\\.","_",colnames(P4Khan))
+colnames(P6Khan) <- gsub("\\.","_",colnames(P6Khan))
+
+#Remove students that are no longer in the class for Period 3, and any null value entries
+P3Khan <- sqldf("SELECT * FROM P3Khan WHERE Student_Name NOT LIKE ('%ord, Ra%')")
+P3Khan <- sqldf("SELECT * FROM P3Khan WHERE Student_Name NOT LIKE ('%alez, Ma%')")
+P3Khan <- sqldf("SELECT * FROM P3Khan WHERE Student_Name NOT LIKE ('%ins, As%')")
+P3Khan <- sqldf("SELECT * FROM P3Khan WHERE Student_Name NOT LIKE ('%as, Ter%')")
+P3Khan <- sqldf("SELECT * FROM P3Khan WHERE Student_Name NOT LIKE ('%ey, C%')")
+P3Khan <- sqldf("SELECT * FROM P3Khan WHERE Student_Name NOT LIKE ('null')")
+
+#Remove students that are no longer in the class for Period 4, and any null value entries
+P4Khan <- sqldf("SELECT * FROM P4Khan WHERE Student_Name NOT LIKE ('%alez, Ma%')")
+P4Khan <- sqldf("SELECT * FROM P4Khan WHERE Student_Name NOT LIKE ('%ett, J%')")
+P4Khan <- sqldf("SELECT * FROM P4Khan WHERE Student_Name NOT LIKE ('%iz, De%')")
+P4Khan <- sqldf("SELECT * FROM P4Khan WHERE Student_Name NOT LIKE ('%bb, Dy%')")
+P4Khan <- sqldf("SELECT * FROM P4Khan WHERE Student_Name NOT LIKE ('%ore, Mi%')")
+P4Khan <- sqldf("SELECT * FROM P4Khan WHERE Student_Name NOT LIKE ('%urt, Ki%')")
+P4Khan <- sqldf("SELECT * FROM P4Khan WHERE Student_Name NOT LIKE ('null')")
+
+#Remove students that are no longer in the class for Period 6, and any null value entries
+P6Khan <- sqldf("SELECT * FROM P6Khan WHERE Student_Name NOT LIKE ('%nes, N%')")
+P6Khan <- sqldf("SELECT * FROM P6Khan WHERE Student_Name NOT LIKE ('%is, Lu%')")
+P6Khan <- sqldf("SELECT * FROM P6Khan WHERE Student_Name NOT LIKE ('%lu, Z%')")
+P6Khan <- sqldf("SELECT * FROM P6Khan WHERE Student_Name NOT LIKE ('null')")
+
+#Split the Khan file's Student.Name into two columns and remove spaces
+P3Khan <- separate(P3Khan, Student_Name, c("LastName", "FirstName"), ",")
+P4Khan <- separate(P4Khan, Student_Name, c("LastName", "FirstName"), ",")
+P6Khan <- separate(P6Khan, Student_Name, c("LastName", "FirstName"), ",")
+P3Khan$FirstName <- substr(P3Khan$FirstName, 2, nchar(P3Khan$FirstName))
+P4Khan$FirstName <- substr(P4Khan$FirstName, 2, nchar(P4Khan$FirstName))
+P6Khan$FirstName <- substr(P6Khan$FirstName, 2, nchar(P6Khan$FirstName))
+
+#Assign the ID_Number based on Student.Name content in All_Datax 
+for(i in 1:nrow(P3Khan)){
+  P3Khan[i,12] <- All_Data[which(All_Data$LastName.x==toupper(P3Khan[i,2]) &
+                              All_Data$FirstName.x==toupper(P3Khan[i,3])),1]
+}
+
+for(i in 1:nrow(P4Khan)){
+  P4Khan[i,12] <- All_Data[which(All_Data$LastName.x==toupper(P4Khan[i,2]) &
+                              All_Data$FirstName.x==toupper(P4Khan[i,3])),1]
+}
+
+for(i in 1:nrow(P6Khan)){
+  P6Khan[i,12] <- All_Data[which(All_Data$LastName.x==toupper(P6Khan[i,2]) &
+                              All_Data$FirstName.x==toupper(P6Khan[i,3])),1]
+}
+
+#Remove all Videos and Articles from the Khan files, since they are ungraded and contain no useful information
+P3Khan <- sqldf("SELECT * FROM P3Khan WHERE Assignment_Type NOT IN('Video', 'Article')")
+P4Khan <- sqldf("SELECT * FROM P4Khan WHERE Assignment_Type NOT IN('Video', 'Article')")
+P6Khan <- sqldf("SELECT * FROM P6Khan WHERE Assignment_Type NOT IN('Video', 'Article')")
+
+#Remove FirstName and LastName so the data is now anonymous, but still connected to All_Data through the ID_Number
+P3Khan <- P3Khan[,c(-2,-3)]
+P4Khan <- P4Khan[,c(-2,-3)]
+P6Khan <- P6Khan[,c(-2,-3)]
+
+#Reorder Khan file columns so that ID_Number is first
+P3Khan <- P3Khan[,c(10,seq(1:9))]
+P4Khan <- P4Khan[,c(10,seq(1:9))]
+P6Khan <- P6Khan[,c(10,seq(1:9))]
+
+#Remove all identifying information from All_Data
+All_Data$FirstName.x <- NULL
+All_Data$LastName.x <- NULL
+All_Data$FirstName.y <- NULL
+All_Data$LastName.y <- NULL
+All_Data$Advisor.x <- NULL
+All_Data$Advisor.y <- NULL
+All_Data$First <- NULL
+All_Data$Last.Name <- NULL
+All_Data$Middle <- NULL
+All_Data$Birthdate <- NULL
+All_Data$Student.Key <- NULL
+All_Data$StudentId <- NULL
+All_Data$FL.Ed.ID <- NULL
+All_Data$ProviderName <- NULL
+All_Data$Testing.Provider <- NULL
+
+
+#Remove columns with no data, uniform data, or superfluous data
+All_Data$Period.Attend.Sem.1_Attendance <- NULL
+All_Data$Period.Attend.Sem.1_Course.s. <- NULL
+All_Data$Period.Attend.Sem.2_Attendance <- NULL
+All_Data$Period.Attend.Sem.2_Course.s. <- NULL
+All_Data$Counselor <- NULL
+All_Data$FSA.EL_Performance.Level <- NULL
+All_Data$FSA.MA_Performance.Level <- NULL
+All_Data$A1.PL_Performance.Level <- NULL
+All_Data$iEL.SS_Performance.Level <- NULL
+All_Data$S <- NULL
+All_Data$GT.S <- NULL
+All_Data$Schl <- NULL
+All_Data$DE <- NULL
+All_Data$GY <- NULL
+All_Data$ELA.Test.Date <- NULL
+All_Data$ELA.Test.Date.1 <- NULL
+All_Data$Testing.Grade <- NULL
+All_Data$Algebra.1.Test.Date <- NULL
+All_Data$Algebra.1.Test.Date.1 <- NULL
+All_Data$Other.Grades_Course <- NULL
+All_Data$Other.Grades_Most.Recent.Grade <- NULL
+All_Data$MA.SS_Performance.Level <- NULL
+All_Data$GEO.PL_Performance.Level <- NULL
+All_Data$GEO.SS_Performance.Level <- NULL
+All_Data$iEL.PR_Performance.Level <- NULL
+All_Data$iMa.SS_Performance.Level <- NULL
+All_Data$iMa.PR_Performance.Level <- NULL
+All_Data$Grad.Base.Year_Year <- NULL
+All_Data$Graduation.Base.Year <- NULL
+
+#Remove all but the area code and zip code from phone and address information
+All_Data$Primary.Phone.. <- substr(All_Data$Primary.Phone..,2,4)
+All_Data$Address <- substr(All_Data$Address, start=(nchar(All_Data$Address)-4),nchar(All_Data$Address))
+
+#Write the .csv files to the Git directory to begin analysis
+setwd("D:/Git/Student Learning Analysis")
+write.csv(All_Data, "Data.csv", row.names=FALSE)
+write.csv(P3Khan, "P3Khan.csv", row.names=FALSE)
+write.csv(P4Khan, "P4Khan.csv", row.names=FALSE)
+write.csv(P6Khan, "P6Khan.csv", row.names=FALSE)
+```
