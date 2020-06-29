@@ -200,11 +200,21 @@ All_Data$Period.Attend.Sem.1_Attendance <- NULL
 All_Data$Period.Attend.Sem.1_Course.s. <- NULL
 All_Data$Period.Attend.Sem.2_Attendance <- NULL
 All_Data$Period.Attend.Sem.2_Course.s. <- NULL
+All_Data$P1Grade <- NULL
+All_Data$P1ReportCard <- NULL
+All_Data$P2Grade <- NULL
+All_Data$P2ReportCard <- NULL
+All_Data$P3Grade <- NULL
+All_Data$P3ReportCard <- NULL
+All_Data$P4Grade <- NULL
+All_Data$P4ReportCard <- NULL
 All_Data$Counselor <- NULL
 All_Data$FSA.EL_Performance.Level <- NULL
 All_Data$FSA.MA_Performance.Level <- NULL
 All_Data$A1.PL_Performance.Level <- NULL
 All_Data$iEL.SS_Performance.Level <- NULL
+All_Data$GEO.PL_Student.Score <- NULL
+All_Data$GEO.SS_Student.Score <- NULL
 All_Data$S <- NULL
 All_Data$GT.S <- NULL
 All_Data$Schl <- NULL
@@ -220,6 +230,7 @@ All_Data$Other.Grades_Most.Recent.Grade <- NULL
 All_Data$MA.SS_Performance.Level <- NULL
 All_Data$GEO.PL_Performance.Level <- NULL
 All_Data$GEO.SS_Performance.Level <- NULL
+All_Data$Geo.PR_Student.Score <- NULL
 All_Data$iEL.PR_Performance.Level <- NULL
 All_Data$iMa.SS_Performance.Level <- NULL
 All_Data$iMa.PR_Performance.Level <- NULL
@@ -230,17 +241,368 @@ All_Data$ELA.Percentile.Rank.1 <- NULL
 All_Data$Geometry.Percentile.Rank <- NULL
 All_Data$Algebra.1.Percentile.Rank <- NULL
 All_Data$Algebra.1.Percentile.Rank.1 <- NULL
+All_Data$Geometry.Subscore...Circ.Geom.Measur.Geom.Prop.Eqa.Points.Earned <- NULL
+All_Data$Geometry.Subscore...Circ.Geom.Measur.Geom.Prop.Eqa.Points.Possible <- NULL
+All_Data$Geometry.Subscore...Congruence.Similarity.Trignome.Points.Earned <- NULL
+All_Data$Geometry.Subscore...Congruence.Similarity.Trignome.Points.Possible <- NULL
+All_Data$Geometry.Subscore...Modeling.with.Geo.Points.Earned <- NULL
+All_Data$Geometry.Subscore...Modeling.with.Geo.Points.Possible <- NULL
+All_Data$Geometry.Pass.Fail <- NULL
+All_Data$Geometry.Test.Date <- NULL
+All_Data$A1.PR_Student.Score <- NULL
+All_Data$ELA.PR_Student.Score <- NULL
+All_Data$iEL.PR_Student.Score <- NULL
+All_Data$iMa.PR_Student.Score <- NULL
+All_Data$Math.Grades_Course <- NULL
+All_Data$Math.Grades_Most.Recent.Grade <- NULL
+All_Data$Read.Grades_Course <- NULL #Most data is missing
+All_Data$Read.Grades_Most.Recent.Grade <- NULL #Most data is missing
+All_Data$Algebra.1.Pass.Fail <- NULL
+All_Data$Algebra.1.Pass.Fail.1 <- NULL
 All_Data$X.2 <- NULL
 All_Data$X.3 <- NULL
+All_Data$X.20 <- NULL
+All_Data$X.21 <- NULL
+All_Data$X.22 <- NULL
+All_Data$X.23 <- NULL
+All_Data$X.18 <- NULL
+All_Data$X.19 <- NULL
 
 #Remove all but the area code and zip code from phone and address information
 All_Data$Primary.Phone.. <- substr(All_Data$Primary.Phone..,2,4)
 All_Data$Address <- substr(All_Data$Address, start=(nchar(All_Data$Address)-4),nchar(All_Data$Address))
 
-#Rename some columns for ease of intrepretability
-colnames(Data)[which(colnames(Data)=="Q1Exam")] <- "Q1Exam"
-colnames(Data)[which(colnames(Data)=="Q2Exam")] <- "Q2Exam"
-colnames(Data)[which(colnames(Data)=="Q3Exam")] <- "Q3Exam"
+#Condensing columns; reduce data to a single numeric, removing unnecessary labels and change to numeric data
+
+#ELA Performance Level
+All_Data$ELA.Performance.Level <- as.numeric(substr(All_Data$ELA.Performance.Level,
+                                                    nchar(All_Data$ELA.Performance.Level)-1,
+                                                    nchar(All_Data$ELA.Performance.Level)))
+All_Data$X <- as.numeric(substr(All_Data$X, nchar(All_Data$X)-1,nchar(All_Data$X)))
+All_Data$ELA.Performance.Level.1 <- as.numeric(substr(All_Data$ELA.Performance.Level.1,
+                                                      nchar(All_Data$ELA.Performance.Level.1)-1,
+                                                      nchar(All_Data$ELA.Performance.Level.1)))
+#ELA Scale Scores
+All_Data$ELA.Scale.Score <- as.numeric(All_Data$ELA.Scale.Score)
+All_Data$X.1 <- as.numeric(All_Data$X.1)
+All_Data$ELA.Scale.Score.1 <- as.numeric(All_Data$ELA.Scale.Score.1)
+#Algebra 1 Performance Level
+All_Data$Algebra.1.Performance.Level <- as.numeric(substr(All_Data$Algebra.1.Performance.Level,
+                                                          nchar(All_Data$Algebra.1.Performance.Level)-1,
+                                                          nchar(All_Data$Algebra.1.Performance.Level)))
+All_Data$X.14 <- as.numeric(substr(All_Data$X.14, nchar(All_Data$X.14)-1, nchar(All_Data$X.14)))
+All_Data$X.15 <- as.numeric(substr(All_Data$X.15, nchar(All_Data$X.15)-1, nchar(All_Data$X.15)))
+All_Data$Algebra.1.Performance.Level.1 <- as.numeric(substr(All_Data$Algebra.1.Performance.Level.1,
+                                                            nchar(All_Data$Algebra.1.Performance.Level.1)-1,
+                                                            nchar(All_Data$Algebra.1.Performance.Level.1)))
+#Algebra 1 Scale Score
+All_Data$Algebra.1.Scale.Score <- as.numeric(All_Data$Algebra.1.Scale.Score)
+All_Data$X.16 <- as.numeric(All_Data$X.16)
+All_Data$X.17 <- as.numeric(All_Data$X.17)
+All_Data$Algebra.1.Scale.Score.1 <- as.numeric(All_Data$Algebra.1.Scale.Score.1)
+
+#ELA Subscores
+All_Data$ELA.Subscore...Craft.and.Struct.Points.Earned <- as.numeric(All_Data$ELA.Subscore...Craft.and.Struct.Points.Earned)
+All_Data$ELA.Subscore...Craft.and.Struct.Points.Earned.1 <- as.numeric(All_Data$ELA.Subscore...Craft.and.Struct.Points.Earned.1)
+All_Data$ELA.Subscore...Craft.and.Struct.Points.Possible <- as.numeric(All_Data$ELA.Subscore...Craft.and.Struct.Points.Possible)
+All_Data$ELA.Subscore...Craft.and.Struct.Points.Possible.1 <- as.numeric(All_Data$ELA.Subscore...Craft.and.Struct.Points.Possible.1)
+All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Earned <- as.numeric(All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Earned)
+All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Earned.1 <- as.numeric(All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Earned.1)
+All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Possible <- as.numeric(All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Possible)
+All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Possible.1 <- as.numeric(All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Possible.1)
+All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Earned <- as.numeric(All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Earned)
+All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Earned.1 <- as.numeric(All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Earned.1)
+All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Possible <- as.numeric(All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Possible)
+All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Possible.1 <- as.numeric(All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Possible.1)
+All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned <- as.numeric(All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned)
+All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned.1 <- as.numeric(All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned.1)
+All_Data$ELA.Subscore...Lang.and.Edit.Points.Possible <- as.numeric(All_Data$ELA.Subscore...Lang.and.Edit.Points.Possible)
+All_Data$ELA.Subscore...Lang.and.Edit.Points.Possible.1 <- as.numeric(All_Data$ELA.Subscore...Lang.and.Edit.Points.Possible.1)
+All_Data$ELA.Subscore...Text.Based.Writing.Points.Earned <- as.numeric(All_Data$ELA.Subscore...Text.Based.Writing.Points.Earned)
+All_Data$ELA.Subscore...Text.Based.Writing.Points.Earned.1 <- as.numeric(All_Data$ELA.Subscore...Text.Based.Writing.Points.Earned.1)
+All_Data$ELA.Subscore...Text.Based.Writing.Points.Possible <- as.numeric(All_Data$ELA.Subscore...Text.Based.Writing.Points.Possible)
+All_Data$ELA.Subscore...Text.Based.Writing.Points.Possible.1 <- as.numeric(All_Data$ELA.Subscore...Text.Based.Writing.Points.Possible.1)
+All_Data$X.4 <- as.numeric(All_Data$X.4)
+All_Data$X.5 <- as.numeric(All_Data$X.5)
+All_Data$X.6 <- as.numeric(All_Data$X.6)
+All_Data$X.7 <- as.numeric(All_Data$X.7)
+All_Data$X.8 <- as.numeric(All_Data$X.8)
+All_Data$X.9 <- as.numeric(All_Data$X.9)
+All_Data$X.10 <- as.numeric(All_Data$X.10)
+All_Data$X.11 <- as.numeric(All_Data$X.11)
+All_Data$X.12 <- as.numeric(All_Data$X.12)
+All_Data$X.13 <- as.numeric(All_Data$X.13)
+
+#Algebra 1 Subscores
+All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Earned <- as.numeric(All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Earned)
+All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Earned.1 <- as.numeric(All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Earned.1)
+All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Possible <- as.numeric(All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Possible)
+All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Possible.1 <- as.numeric(All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Possible.1)
+All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Earned <- as.numeric(All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Earned)
+All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Earned.1 <- as.numeric(All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Earned.1)
+All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Possible <- as.numeric(All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Possible)
+All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Possible.1 <- as.numeric(All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Possible.1)
+All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Earned <- as.numeric(All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Earned)
+All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Earned.1 <- as.numeric(All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Earned.1)
+All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Possible <- as.numeric(All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Possible)
+All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Possible.1 <- as.numeric(All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Possible.1)
+All_Data$X.24 <- as.numeric(All_Data$X.24)
+All_Data$X.25 <- as.numeric(All_Data$X.25)
+All_Data$X.26 <- as.numeric(All_Data$X.26)
+All_Data$X.27 <- as.numeric(All_Data$X.27)
+All_Data$X.28 <- as.numeric(All_Data$X.28)
+All_Data$X.29 <- as.numeric(All_Data$X.29)
+All_Data$X.30 <- as.numeric(All_Data$X.30)
+All_Data$X.31 <- as.numeric(All_Data$X.31)
+All_Data$X.32 <- as.numeric(All_Data$X.32)
+All_Data$X.33 <- as.numeric(All_Data$X.33)
+All_Data$X.34 <- as.numeric(All_Data$X.34)
+All_Data$X.35 <- as.numeric(All_Data$X.35)
+
+#Condense numerics from the previous columns to one column; the three columns repeat scores
+#The repeat columns represent students retesting for higher scores, so the highest score is kept
+
+#ELA Performance Level
+for(i in 1:nrow(All_Data)){
+  if (is.na(All_Data$ELA.Performance.Level[i]) &
+      is.na(All_Data$X[i]) &
+      is.na(All_Data$ELA.Performance.Level.1[i]))
+  {
+    next
+  }
+  else
+  {
+    All_Data$ELA.Performance.Level[i] <-
+      max(All_Data$ELA.Performance.Level[i],
+          All_Data$X[i],
+          All_Data$ELA.Performance.Level.1[i],na.rm = TRUE)
+  }
+
+}
+
+#ELA Scale Score
+for(i in 1:nrow(All_Data)){
+  if (is.na(All_Data$ELA.Scale.Score[i]) &
+      is.na(All_Data$X.1[i]) &
+      is.na(All_Data$ELA.Scale.Score.1[i]))
+  {
+    next
+  }
+  else
+  {
+    All_Data$ELA.Scale.Score[i] <- max(All_Data$ELA.Scale.Score[i],
+                                       All_Data$X.1[i],
+                                       All_Data$ELA.Scale.Score.1[i],
+                                       na.rm = TRUE)
+  }
+
+}
+
+#Algebra 1 Performance Level
+for(i in 1:nrow(All_Data)){
+  if (is.na(All_Data$Algebra.1.Performance.Level[i]) &
+      is.na(All_Data$X.14[i]) & is.na(All_Data$X.15[i]) &
+      is.na(All_Data$Algebra.1.Performance.Level.1[i]))
+  {
+    next
+  }
+  else
+  {
+    All_Data$Algebra.1.Performance.Level[i] <-max(All_Data$Algebra.1.Performance.Level[i],
+                                                  All_Data$X.14[i], All_Data$X.15[i],
+                                                  All_Data$Algebra.1.Performance.Level.1[i],
+                                                  na.rm = TRUE)
+  }
+
+}
+
+#Algebra 1 Scale Score
+for(i in 1:nrow(All_Data)){
+  if (is.na(All_Data$Algebra.1.Scale.Score[i]) & is.na(All_Data$X.16[i]) & is.na(All_Data$X.17[i]) & is.na(All_Data$Algebra.1.Scale.Score.1[i]))
+  {
+    next
+  }
+  else
+  {
+    All_Data$Algebra.1.Scale.Score[i] <-
+      max(All_Data$Algebra.1.Scale.Score[i], All_Data$X.16[i], All_Data$X.17[i], All_Data$Algebra.1.Scale.Score.1[i],na.rm = TRUE)
+  }
+
+}
+
+#Compute ELA Raw Score and ELA Max Score by adding all subscores for each category
+#Multiple scores exist for multiple takes of the test
+All_Data$ELA_Raw_Score_1 <- NA
+All_Data$ELA_Raw_Score_2 <- NA
+All_Data$ELA_Raw_Score_3 <- NA
+All_Data$ELA_Max_Score_1 <- NA
+All_Data$ELA_Max_Score_2 <- NA
+All_Data$ELA_Max_Score_3 <- NA
+
+for(i in 1:nrow(All_Data)){
+  if(is.na(All_Data$ELA.Scale.Score[i]))
+  {
+    next
+  }
+  else
+  {
+    All_Data$ELA_Raw_Score_1[i] <- sum(All_Data$ELA.Subscore...Craft.and.Struct.Points.Earned[i],
+                                       All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Earned[i],
+                                       All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Earned[i],
+                                       All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned[i],
+                                       All_Data$ELA.Subscore...Text.Based.Writing.Points.Earned[i],
+                                       na.rm=T)
+    All_Data$ELA_Raw_Score_2[i] <- sum(All_Data$X.5[i],
+                                       All_Data$X.7[i],
+                                       All_Data$X.9[i],
+                                       All_Data$X.11[i],
+                                       All_Data$X.13[i],
+                                       na.rm=T)
+    All_Data$ELA_Raw_Score_3[i] <- sum(All_Data$ELA.Subscore...Craft.and.Struct.Points.Earned.1[i],
+                                       All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Earned.1[i],
+                                       All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Earned.1[i],
+                                       All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned.1[i],
+                                       All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned.1[i],
+                                       na.rm=T)
+    All_Data$ELA_Max_Score_1[i] <- sum(All_Data$ELA.Subscore...Craft.and.Struct.Points.Possible[i],
+                                       All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Possible[i],
+                                       All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Possible[i],
+                                       All_Data$ELA.Subscore...Lang.and.Edit.Points.Possible[i],
+                                       All_Data$ELA.Subscore...Text.Based.Writing.Points.Possible[i],
+                                       na.rm=T)
+    All_Data$ELA_Max_Score_2[i] <- sum(All_Data$X.4[i],
+                                       All_Data$X.6[i],
+                                       All_Data$X.8[i],
+                                       All_Data$X.10[i],
+                                       All_Data$X.12[i],
+                                       na.rm=T)
+    All_Data$ELA_Max_Score_3[i] <- sum(All_Data$ELA.Subscore...Craft.and.Struct.Points.Possible.1[i],
+                                       All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Possible.1[i],
+                                       All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Possible.1[i],
+                                       All_Data$ELA.Subscore...Lang.and.Edit.Points.Possible.1[i],
+                                       All_Data$ELA.Subscore...Text.Based.Writing.Points.Possible.1[i],
+                                       na.rm=T)
+  }
+}
+
+#Compute Algebra 1 Raw Score and Algebra 1 Max Score by adding all subscores for each category
+#Multiple scores exist for multiple takes of the test
+All_Data$A1_Raw_Score_1 <- NA
+All_Data$A1_Raw_Score_2 <- NA
+All_Data$A1_Raw_Score_3 <- NA
+All_Data$A1_Raw_Score_4 <- NA
+All_Data$A1_Max_Score_1 <- NA
+All_Data$A1_Max_Score_2 <- NA
+All_Data$A1_Max_Score_3 <- NA
+All_Data$A1_Max_Score_4 <- NA
+
+for(i in 1:nrow(All_Data)){
+  if(is.na(All_Data$Algebra.1.Scale.Score[i]))
+  {
+    next
+  }
+  else
+  {
+    All_Data$A1_Raw_Score_1[i] <- sum(All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Earned[i],
+                                       All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Earned[i],
+                                       All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Earned[i],
+                                       na.rm=T)
+    All_Data$A1_Raw_Score_2[i] <- sum(All_Data$X.26[i],
+                                      All_Data$X.30[i],
+                                      All_Data$X.34[i],
+                                       na.rm=T)
+    All_Data$A1_Raw_Score_3[i] <- sum(All_Data$X.27[i],
+                                      All_Data$X.31[i],
+                                      All_Data$X.35[i],
+                                       na.rm=T)
+    All_Data$A1_Raw_Score_4[i] <- sum(All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Earned.1[i],
+                                      All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Earned.1[i],
+                                      All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Earned.1[i],
+                                       na.rm=T)
+    All_Data$A1_Max_Score_1[i] <- sum(All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Possible[i],
+                                      All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Possible[i],
+                                      All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Possible[i],
+                                       na.rm=T)
+    All_Data$A1_Max_Score_2[i] <- sum(All_Data$X.24[i],
+                                      All_Data$X.28[i],
+                                      All_Data$X.32[i],
+                                       na.rm=T)
+    All_Data$A1_Max_Score_3[i] <- sum(All_Data$X.25[i],
+                                      All_Data$X.29[i],
+                                      All_Data$X.33[i],
+                                       na.rm=T)
+    All_Data$A1_Max_Score_4[i] <- sum(All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Possible.1[i],
+                                      All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Possible.1[i],
+                                      All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Possible.1[i],
+                                       na.rm=T)
+  }
+}
+
+#Remove the subscore columns with superfluous data
+All_Data$ELA.Performance.Level.1 <- NULL
+All_Data$X <- NULL
+All_Data$X.14 <- NULL
+All_Data$X.15 <- NULL
+All_Data$Algebra.1.Performance.Level.1 <- NULL
+All_Data$ELA.Scale.Score.1 <- NULL
+All_Data$X.1 <- NULL
+All_Data$Algebra.1.Scale.Score.1 <- NULL
+All_Data$X.16 <- NULL
+All_Data$X.17 <- NULL
+All_Data$ELA.Subscore...Craft.and.Struct.Points.Earned <- NULL
+All_Data$ELA.Subscore...Craft.and.Struct.Points.Earned.1 <- NULL
+All_Data$ELA.Subscore...Craft.and.Struct.Points.Possible <- NULL
+All_Data$ELA.Subscore...Craft.and.Struct.Points.Possible.1 <- NULL
+All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Earned <- NULL
+All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Earned.1 <- NULL
+All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Possible <- NULL
+All_Data$ELA.Subscore...Integ.Know.and.Idea.Points.Possible.1 <- NULL
+All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Earned <- NULL
+All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Earned.1 <- NULL
+All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Possible <- NULL
+All_Data$ELA.Subscore...Key.Ideas.and.Details.Points.Possible.1 <- NULL
+All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned <- NULL
+All_Data$ELA.Subscore...Lang.and.Edit.Points.Earned.1 <- NULL
+All_Data$ELA.Subscore...Lang.and.Edit.Points.Possible <- NULL
+All_Data$ELA.Subscore...Lang.and.Edit.Points.Possible.1 <- NULL
+All_Data$ELA.Subscore...Text.Based.Writing.Points.Earned <- NULL
+All_Data$ELA.Subscore...Text.Based.Writing.Points.Earned.1 <- NULL
+All_Data$ELA.Subscore...Text.Based.Writing.Points.Possible <- NULL
+All_Data$ELA.Subscore...Text.Based.Writing.Points.Possible.1 <- NULL
+All_Data$X.4 <- NULL
+All_Data$X.5 <- NULL
+All_Data$X.6 <- NULL
+All_Data$X.7 <- NULL
+All_Data$X.8 <- NULL
+All_Data$X.9 <- NULL
+All_Data$X.10 <- NULL
+All_Data$X.11 <- NULL
+All_Data$X.12 <- NULL
+All_Data$X.13 <- NULL
+All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Earned <- NULL
+All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Earned.1 <- NULL
+All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Possible <- NULL
+All_Data$Algebra.1.Subscore...Algebra.and.Modeling.Points.Possible.1 <- NULL
+All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Earned <- NULL
+All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Earned.1 <- NULL
+All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Possible <- NULL
+All_Data$Algebra.1.Subscore...Functions.and.Modeling.Points.Possible.1 <- NULL
+All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Earned <- NULL
+All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Earned.1 <- NULL
+All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Possible <- NULL
+All_Data$Algebra.1.Subscore...Stats.and.Num.System.Points.Possible.1 <- NULL
+All_Data$X.24 <- NULL
+All_Data$X.25 <- NULL
+All_Data$X.26 <- NULL
+All_Data$X.27 <- NULL
+All_Data$X.28 <- NULL
+All_Data$X.29 <- NULL
+All_Data$X.30 <- NULL
+All_Data$X.31 <- NULL
+All_Data$X.32 <- NULL
+All_Data$X.33 <- NULL
+All_Data$X.34 <- NULL
+All_Data$X.35 <- NULL
 
 #This is for calculating the Khan Ordinal Score, used as a potential regression approach
 Khan[1,11] <- ""
@@ -271,6 +633,14 @@ for(i in 1:nrow(Khan)){
     Khan[i,11] <- 4
   }
 }
+
+#Rename some columns for ease of intrepretability
+colnames(All_Data)[which(colnames(All_Data)=="Gr")] <- "Grade_Level"
+colnames(All_Data)[which(colnames(All_Data)=="G")] <- "Gender"
+colnames(All_Data)[which(colnames(All_Data)=="Primary.Phone..")] <- "Area_Code"
+colnames(All_Data)[which(colnames(All_Data)=="Address")] <- "Zip_Code"
+colnames(All_Data)[which(colnames(All_Data)=="ELA.Performance.Level")] <- "ELA_Level"
+colnames(All_Data)[which(colnames(All_Data)=="ELA.Scale.Score")] <- "ELA_Score"
 
 #Write the .csv files to the Git directory to begin analysis
 setwd("D:/Git/Student Learning Analysis")
@@ -693,4 +1063,47 @@ summary(lm(Data$Q3Exam ~ Data$Q3KhanRaw))
 plot(Data$Q3Exam, Data$Q3KhanRaw)
 #Commented out for ease of chunking the code; errors are approximately normal
 #plot(lm(Data$Q3Exam ~ Data$Q3KhanRaw))
+```
+
+
+```{r}
+#Interaction Analysis
+
+Scoring_Matrix
+#All 50% cutoff correlations are superior to 20%.
+#All 70% cutoff correlations are superior to 50%.
+#100% cutoff correlation is superior for Q1Exam and Q3Exam, but not Q2Exam
+#Partial Score is superior to 70% cutoff
+#Partial Score is superior to Ordinal Score
+#Partial Score is superior to Raw Sum Score
+#Between 100% cutoff and Partial Score, Partial Score is the more sensible approach, since it reflects
+#the general student goal of a 70% for credit in class, while also giving additioanl weight to students
+#who scored 100%, which brings the correlation value above the simple 70% cutoff.
+
+#While the correlation between quarterly exams and Khan assignments is significant, it's not clear whether
+#the actual content of those assignments correlates with each quarter. Exploring Khan assignments between
+#quarters may provide this insight
+Correlation_Across_Quarters <- matrix(nrow=3,ncol=3)
+rownames(Correlation_Across_Quarters) <- c("Q1Khan", "Q2Khan", "Q3Khan")
+colnames(Correlation_Across_Quarters) <- c("Q1Exam", "Q2Exam", "Q3Exam")
+round(cor(Data$Q1Exam, Data$Q1KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[1,1]
+round(cor(Data$Q2Exam, Data$Q1KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[1,2]
+round(cor(Data$Q3Exam, Data$Q1KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[1,3]
+round(cor(Data$Q1Exam, Data$Q2KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[2,1]
+round(cor(Data$Q2Exam, Data$Q2KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[2,2]
+round(cor(Data$Q3Exam, Data$Q2KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[2,3]
+round(cor(Data$Q1Exam, Data$Q3KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[3,1]
+round(cor(Data$Q2Exam, Data$Q3KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[3,2]
+round(cor(Data$Q3Exam, Data$Q3KhanPartial, use="complete.obs"),4) -> Correlation_Across_Quarters[3,3]
+
+Correlation_Across_Quarters
+#The correlation between all Khan and Exam scores is significant, with the smallest value actually being between
+#Q3Khan and Q3Exam. This suggests a potential interaction effect. Since Q1Khan assignments have the highest
+#correlation with all 3 quarter exams, this suggests that this knowledge is either essential for student success
+#or that students who fall behind early on typically do not catch up
+
+#Testing for interaction for all 3 exams
+summary(glm(Data$Q1Exam/100 ~ Data$Q1KhanPartial*Data$Q2KhanPartial*Data$Q3KhanPartial, weights=25, family=binomial("logit")))
+summary(glm(Data$Q2Exam ~ Data$Q1KhanPartial*Data$Q2KhanPartial*Data$Q3KhanPartial))
+summary(glm(Data$Q3Exam ~ Data$Q1KhanPartial*Data$Q2KhanPartial*Data$Q3KhanPartial))
 ```
